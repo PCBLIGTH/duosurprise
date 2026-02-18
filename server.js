@@ -152,6 +152,36 @@ app.post('/api/admin/products', upload.fields([{ name: 'image', maxCount: 1 }, {
     }
 });
 
+// Emergency Seed for Production
+app.get('/api/admin/seed', async (req, res) => {
+    try {
+        const count = await Product.count();
+        if (count > 0) return res.send('Database already has products.');
+
+        await Product.bulkCreate([
+            {
+                name: "Coffret Duo Luxe",
+                category: "luxury",
+                price: 45000,
+                image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=500",
+                description: "Un coffret élégant contenant une montre et un parfum de luxe.",
+                tag: "Nouveau"
+            },
+            {
+                name: "Bouquet de Roses Rouges",
+                category: "romantic",
+                price: 15000,
+                image: "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=500",
+                description: "12 roses rouges fraîches pour exprimer votre amour.",
+                tag: "Populaire"
+            }
+        ]);
+        res.send('Database seeded successfully!');
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 // Delete a product
 app.delete('/api/admin/products/:id', async (req, res) => {
     try {
@@ -162,12 +192,17 @@ app.delete('/api/admin/products/:id', async (req, res) => {
     }
 });
 
-// Serve the frontend for any other route
+// Serve the frontend
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-app.get(/.*/, (req, res) => {
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Catch-all for other routes
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
