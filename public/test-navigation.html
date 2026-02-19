@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Navigation Contact</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f0518;
+            color: white;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 5, 24, 0.95);
+            padding: 1rem;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(217, 70, 239, 0.3);
+        }
+
+        .navbar a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .navbar a:hover {
+            color: #d946ef;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 6rem 2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        #home {
+            background: linear-gradient(135deg, #0f0518, #1a0b2e);
+        }
+
+        #products {
+            background: linear-gradient(135deg, #1a0b2e, #0f0518);
+        }
+
+        #contact {
+            background: linear-gradient(135deg, #0f0518, #14061f);
+        }
+
+        .test-result {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #22c55e;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="#home">Accueil</a>
+        <a href="#products">Produits</a>
+        <a href="#contact" id="contact-link">Contact</a>
+    </nav>
+
+    <section id="home">
+        <div>Section Accueil</div>
+    </section>
+
+    <section id="products">
+        <div>Section Produits</div>
+    </section>
+
+    <section id="contact">
+        <div>Section Contact - Vous êtes arrivé ici ! ✅</div>
+    </section>
+
+    <div class="test-result" id="test-result">
+        ✅ Navigation fonctionne !
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth Scroll for Navigation Links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Get navbar height for offset
+                        const navbar = document.querySelector('.navbar');
+                        const navbarHeight = navbar ? navbar.offsetHeight : 80;
+
+                        // Calculate position
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+
+                        // Smooth scroll
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        // Show success message
+                        if (targetId === '#contact') {
+                            setTimeout(() => {
+                                document.getElementById('test-result').style.display = 'block';
+                                setTimeout(() => {
+                                    document.getElementById('test-result').style.display = 'none';
+                                }, 3000);
+                            }, 500);
+                        }
+                    }
+                });
+            });
+
+            console.log('✅ Script de navigation chargé');
+            console.log('Liens trouvés:', document.querySelectorAll('a[href^="#"]').length);
+        });
+    </script>
+</body>
+
+</html>

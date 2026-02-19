@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - DuoSurprise</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0f0518;
+            color: white;
+            padding: 2rem;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .order-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f0abfc;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+            color: #000;
+        }
+
+        .status-paid {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline:hover {
+            border-color: #d946ef;
+            color: #d946ef;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>Tableau de Bord Admin</h1>
+            <a href="/" class="btn btn-outline">Retour au Site</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Commandes</h3>
+                <p id="total-orders">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Revenus</h3>
+                <p id="total-revenue">0 FCFA</p>
+            </div>
+            <div class="stat-card">
+                <h3>Abonnés</h3>
+                <p id="total-subscribers">0</p>
+            </div>
+        </div>
+
+        <h2>Gestion des Cadeaux</h2>
+        <div class="stat-card" style="margin-bottom: 2rem;">
+            <h3>Ajouter un Nouveau Cadeau</h3>
+            <form id="add-product-form" enctype="multipart/form-data"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <input type="text" name="name" placeholder="Nom" required
+                    style="padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                <input type="number" name="price" placeholder="Prix" required
+                    style="padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                <input type="file" name="image" accept="image/*" required style="padding: 0.5rem; color: white;">
+                <button type="submit"
+                    style="background: #d946ef; color: white; border: none; padding: 0.5rem; cursor: pointer;">Ajouter</button>
+            </form>
+        </div>
+
+        <table class="order-table" style="margin-bottom: 3rem;">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Catégorie</th>
+                    <th>Prix</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="product-list"></tbody>
+        </table>
+
+        <h2>Dernières Commandes</h2>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Produit</th>
+                    <th>Prix</th>
+                    <th>Paiement</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody id="order-list"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchAdminData() {
+            try {
+                const [ordersRes, subscribersRes, productsRes] = await Promise.all([
+                    fetch('/api/admin/orders'),
+                    fetch('/api/admin/subscribers'),
+                    fetch('/api/products')
+                ]);
+
+                const orders = await ordersRes.json();
+                const subscribers = await subscribersRes.json();
+                const products = await productsRes.json();
+
+                document.getElementById('total-orders').textContent = orders.length;
+                document.getElementById('total-subscribers').textContent = subscribers.length;
+                document.getElementById('total-revenue').textContent = orders.reduce((acc, o) => acc + (o.totalAmount || 0), 0).toLocaleString('fr-FR') + ' FCFA';
+
+                document.getElementById('product-list').innerHTML = products.map(p => `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>${p.category}</td>
+                        <td>${(p.price || 0).toLocaleString('fr-FR')} FCFA</td>
+                        <td><button onclick="deleteProduct('${p.id}')" style="background:#ef4444; color:white; border:none; padding:5px; cursor:pointer;">Supprimer</button></td>
+                    </tr>
+                `).join('');
+
+                document.getElementById('order-list').innerHTML = orders.map(order => `
+                    <tr>
+                        <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                        <td>${order.recipientName}<br><small>${order.address}</small></td>
+                        <td>${order.productName}</td>
+                        <td>${(order.totalAmount || 0).toLocaleString('fr-FR')} FCFA</td>
+                        <td>${order.paymentMethod.toUpperCase()}${order.confirmationCode ? `<br><small style="color:#22c55e;">OTP: ${order.confirmationCode}</small>` : ''}</td>
+                        <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            await fetch('/api/admin/products', { method: 'POST', body: formData });
+            e.target.reset();
+            fetchAdminData();
+        });
+
+        async function deleteProduct(id) {
+            if (confirm('Supprimer ?')) await fetch('/api/admin/products/' + id, { method: 'DELETE' });
+            fetchAdminData();
+        }
+
+        fetchAdminData();
+    </script>
+</body>
+
+</html>
