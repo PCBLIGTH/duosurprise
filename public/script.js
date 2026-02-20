@@ -182,11 +182,11 @@ async function startPayment() {
     const ussdMsgElem = document.getElementById('ussd-msg');
 
     if (operator === 'om') {
-        ussdCodeElem.textContent = "#144*82#";
-        ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Orange :";
+        ussdCodeElem.textContent = "#144*77#";
+        ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Orange pour générer votre code secret :";
     } else if (operator === 'moov') {
-        ussdCodeElem.textContent = "*155*4*4#";
-        ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Moov :";
+        ussdCodeElem.textContent = "#155*4*1#";
+        ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Moov pour valider votre paiement :";
     } else {
         ussdCodeElem.textContent = "PAIEMENT CARTE";
         ussdMsgElem.textContent = "Veuillez suivre les instructions sur l'écran :";
