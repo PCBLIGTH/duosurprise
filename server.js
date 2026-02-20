@@ -207,8 +207,8 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Catch-all for other routes
-app.get('*', (req, res) => {
+// Catch-all for other routes (Express 5 compatible)
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
