@@ -207,21 +207,23 @@
                     <div class="payment-options">
                         <label class="payment-option">
                             <input type="radio" name="payment" value="om" required>
-                            <div class="option-card orange">
-                                <i class="fas fa-mobile-alt"></i>
+                            <div class="option-card">
+                                <img src="https://logos-marques.com/wp-content/uploads/2021/04/Orange-Money-Logo.png"
+                                    alt="Orange Money">
                                 <span>Orange Money</span>
                             </div>
                         </label>
                         <label class="payment-option">
                             <input type="radio" name="payment" value="moov" required>
-                            <div class="option-card moov">
-                                <i class="fas fa-satellite-dish"></i>
+                            <div class="option-card">
+                                <img src="https://moov-africa.ml/wp-content/uploads/2021/01/Moov-Money-Logo.png"
+                                    alt="Moov Money">
                                 <span>Moov Money</span>
                             </div>
                         </label>
                         <label class="payment-option">
                             <input type="radio" name="payment" value="card" required>
-                            <div class="option-card card">
+                            <div class="option-card">
                                 <i class="far fa-credit-card"></i>
                                 <span>Carte Bancaire</span>
                             </div>
@@ -240,9 +242,18 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-primary full-width" style="margin-top: 1.5rem;"
-                        onclick="showOTP()">Payer et Confirmer</button>
+                        onclick="startPayment()">Payer et Confirmer</button>
                     <button type="button" class="btn btn-outline full-width" style="margin-top: 0.5rem; border: none;"
                         onclick="showInfo()">Retour</button>
+                </div>
+
+                <div id="step-redirection" style="display: none; text-align: center; padding: 2rem 0;">
+                    <div class="loader-container" style="margin-bottom: 2rem;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 style="color: var(--text-main); margin-bottom: 1rem;">Redirection vers IKATIQUET...</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Veuillez ne pas fermer cette fenêtre. Nous
+                        vous connectons au portail de paiement sécurisé.</p>
                 </div>
 
                 <div id="step-otp" style="display: none;">

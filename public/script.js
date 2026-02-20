@@ -98,6 +98,7 @@ const closeBtn = document.querySelector('.close-btn');
 const form = document.getElementById('surprise-form');
 const stepInfo = document.getElementById('step-info');
 const stepPayment = document.getElementById('step-payment');
+const stepRedirection = document.getElementById('step-redirection');
 const stepOTP = document.getElementById('step-otp');
 
 function openOrderModal(productName, price) {
@@ -147,7 +148,7 @@ function showPayment() {
     }
 }
 
-function showOTP() {
+async function startPayment() {
     const paymentSelected = form.querySelector('input[name="payment"]:checked');
     if (!paymentSelected) {
         alert('Veuillez choisir un mode de paiement.');
@@ -171,13 +172,26 @@ function showOTP() {
         }
     }
 
+    // Show Redirection Step
     stepPayment.style.display = 'none';
-    stepOTP.style.display = 'block';
-    document.querySelector('.modal-subtitle').textContent = "Vérification en cours";
+    stepRedirection.style.display = 'block';
+    document.querySelector('.modal-subtitle').textContent = "Connexion sécurisée en cours...";
+
+    // Simulate redirection delay
+    setTimeout(() => {
+        stepRedirection.style.display = 'none';
+        stepOTP.style.display = 'block';
+        document.querySelector('.modal-subtitle').textContent = "Validation du paiement";
+    }, 2500);
+}
+
+function showOTP() {
+    startPayment();
 }
 
 function showInfo() {
     stepPayment.style.display = 'none';
+    stepRedirection.style.display = 'none';
     stepOTP.style.display = 'none';
     stepInfo.style.display = 'block';
     const subtitle = selectedProduct.price === 0
