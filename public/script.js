@@ -177,6 +177,24 @@ async function startPayment() {
     stepRedirection.style.display = 'block';
     document.querySelector('.modal-subtitle').textContent = "Connexion sécurisée en cours...";
 
+    const operator = paymentSelected.value;
+    const ussdCodeElem = document.getElementById('ussd-code-display');
+    const ussdMsgElem = document.getElementById('ussd-msg');
+
+    if (operator === 'om') {
+        ussdCodeElem.textContent = "#144*82#";
+        ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Orange :";
+    } else if (operator === 'moov') {
+        ussdCodeElem.textContent = "*155*4*4#";
+        ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Moov :";
+    } else {
+        ussdCodeElem.textContent = "PAIEMENT CARTE";
+        ussdMsgElem.textContent = "Veuillez suivre les instructions sur l'écran :";
+    }
+
+    // Start Timer
+    startPaymentTimer(15 * 60);
+
     // Simulate redirection delay
     setTimeout(() => {
         stepRedirection.style.display = 'none';
@@ -185,11 +203,37 @@ async function startPayment() {
     }, 2500);
 }
 
+let paymentTimerInterval = null;
+
+function startPaymentTimer(duration) {
+    if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+
+    let timer = duration, minutes, seconds;
+    const display = document.getElementById('payment-timer');
+
+    paymentTimerInterval = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+            clearInterval(paymentTimerInterval);
+            alert("Le temps alloué au paiement a expiré.");
+            showPayment();
+        }
+    }, 1000);
+}
+
 function showOTP() {
     startPayment();
 }
 
 function showInfo() {
+    if (paymentTimerInterval) clearInterval(paymentTimerInterval);
     stepPayment.style.display = 'none';
     stepRedirection.style.display = 'none';
     stepOTP.style.display = 'none';

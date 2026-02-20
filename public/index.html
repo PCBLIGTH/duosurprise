@@ -257,17 +257,34 @@
                 </div>
 
                 <div id="step-otp" style="display: none;">
-                    <h3 style="margin-bottom: 1rem; color: var(--primary-light);">Vérification de Sécurité</h3>
-                    <p style="margin-bottom: 1rem; font-size: 0.9rem;">Un code de confirmation a été envoyé par
-                        SMS/Email. Veuillez le saisir ci-dessous pour valider votre paiement.</p>
-                    <div class="form-group">
-                        <label>Code de Confirmation (OTP)</label>
-                        <input type="text" id="otp-input" placeholder="Entrez le code à 6 chiffres" maxlength="6">
+                    <div class="payment-header-mini">
+                        <div class="timer-badge">
+                            <i class="far fa-clock"></i> <span id="payment-timer">15:00</span>
+                        </div>
+                        <h3 style="color: var(--primary-light);">Validation du Paiement</h3>
                     </div>
-                    <button type="submit" class="btn btn-primary full-width" style="margin-top: 1.5rem;">Valider et
-                        Confirmer</button>
+
+                    <div class="ussd-instruction-box">
+                        <p id="ussd-msg">Composez le code suivant sur votre téléphone :</p>
+                        <div class="ussd-code" id="ussd-code-display">#144*82#</div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <label>Code de Confirmation / OTP</label>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem;">Saisissez le code
+                            secret reçu par SMS ou via le menu USSD.</p>
+                        <input type="text" id="otp-input" placeholder="Ex: 123456" maxlength="6"
+                            style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 800;">
+                    </div>
+
+                    <div class="security-badges">
+                        <i class="fas fa-shield-alt"></i> Paiement 100% Sécurisé via IKATIQUET
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width" style="margin-top: 1.5rem;">Confirmer la
+                        Transaction</button>
                     <button type="button" class="btn btn-outline full-width" style="margin-top: 0.5rem; border: none;"
-                        onclick="showPayment()">Retour au Paiement</button>
+                        onclick="showPayment()">Annuler et changer de méthode</button>
                 </div>
             </form>
         </div>
