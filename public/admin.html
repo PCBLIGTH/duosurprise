@@ -7,6 +7,15 @@
     <title>Admin v2 - DuoSurprise</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        (function () {
+            const password = prompt("Veuillez saisir le mot de passe administrateur :");
+            if (password !== "Duo2026") {
+                alert("Mot de passe incorrect ! Redirection...");
+                window.location.href = "/";
+            }
+        })();
+    </script>
     <style>
         body {
             background: #0f0518;
