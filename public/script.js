@@ -182,7 +182,7 @@ async function startPayment() {
     const ussdMsgElem = document.getElementById('ussd-msg');
 
     if (operator === 'om') {
-        ussdCodeElem.textContent = "#144*77#";
+        ussdCodeElem.textContent = "#144#77#";
         ussdMsgElem.textContent = "Composez le code suivant sur votre téléphone Orange pour générer votre code secret :";
     } else if (operator === 'moov') {
         ussdCodeElem.textContent = "#155*4*1#";
