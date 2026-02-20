@@ -18,6 +18,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Admin Routes (Move specific routes before the catch-all)
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// Alias for /admin/
+app.get('/admin/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 // Configure Multer for File Uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -193,10 +203,6 @@ app.delete('/api/admin/products/:id', async (req, res) => {
 });
 
 // Serve the frontend
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
