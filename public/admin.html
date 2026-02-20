@@ -124,8 +124,17 @@
                     style="padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
                 <input type="number" name="price" placeholder="Prix" required
                     style="padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                <select name="category" required
+                    style="padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                    <option value="" disabled selected>Catégorie</option>
+                    <option value="romantic">Romantique</option>
+                    <option value="tech">High-Tech</option>
+                    <option value="luxury">Luxe</option>
+                </select>
+                <input type="text" name="tag" placeholder="Tag (ex: Nouveau, Populaire)"
+                    style="padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
                 <input type="file" name="image" accept="image/*" required style="padding: 0.5rem; color: white;">
-                <button type="submit"
+                <button type="submit" id="add-btn"
                     style="background: #d946ef; color: white; border: none; padding: 0.5rem; cursor: pointer;">Ajouter</button>
             </form>
         </div>
@@ -161,10 +170,11 @@
     <script>
         async function fetchAdminData() {
             try {
+                const ts = Date.now();
                 const [ordersRes, subscribersRes, productsRes] = await Promise.all([
-                    fetch('/api/admin/orders'),
-                    fetch('/api/admin/subscribers'),
-                    fetch('/api/products')
+                    fetch(`/api/admin/orders?t=${ts}`),
+                    fetch(`/api/admin/subscribers?t=${ts}`),
+                    fetch(`/api/products?t=${ts}`)
                 ]);
 
                 const orders = await ordersRes.json();
@@ -190,24 +200,54 @@
                         <td>${order.recipientName}<br><small>${order.address}</small></td>
                         <td>${order.productName}</td>
                         <td>${(order.totalAmount || 0).toLocaleString('fr-FR')} FCFA</td>
-                        <td>${order.paymentMethod.toUpperCase()}${order.confirmationCode ? `<br><small style="color:#22c55e;">OTP: ${order.confirmationCode}</small>` : ''}</td>
+                        <td>${order.paymentMethod ? order.paymentMethod.toUpperCase() : 'N/A'}${order.confirmationCode ? `<br><small style="color:#22c55e;">OTP: ${order.confirmationCode}</small>` : ''}</td>
                         <td><span class="status-badge status-${order.status}">${order.status}</span></td>
                     </tr>
                 `).join('');
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error('Fetch error:', err);
+                alert('Erreur lors du chargement des données.');
+            }
         }
 
         document.getElementById('add-product-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            await fetch('/api/admin/products', { method: 'POST', body: formData });
-            e.target.reset();
-            fetchAdminData();
+            const btn = document.getElementById('add-btn');
+            const originalText = btn.textContent;
+
+            btn.textContent = 'Ajout en cours...';
+            btn.disabled = true;
+
+            try {
+                const formData = new FormData(e.target);
+                const response = await fetch('/api/admin/products', { method: 'POST', body: formData });
+
+                if (response.ok) {
+                    alert('Cadeau ajouté avec succès !');
+                    e.target.reset();
+                    await fetchAdminData();
+                } else {
+                    const error = await response.json();
+                    alert('Erreur : ' + (error.message || 'Impossible d\'ajouter le produit'));
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                alert('Erreur de connexion au serveur.');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         });
 
         async function deleteProduct(id) {
-            if (confirm('Supprimer ?')) await fetch('/api/admin/products/' + id, { method: 'DELETE' });
-            fetchAdminData();
+            if (confirm('Supprimer ce cadeau ?')) {
+                const res = await fetch('/api/admin/products/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    fetchAdminData();
+                } else {
+                    alert('Erreur lors de la suppression.');
+                }
+            }
         }
 
         fetchAdminData();

@@ -146,19 +146,19 @@ app.post('/api/admin/products', upload.fields([{ name: 'image', maxCount: 1 }, {
 
         const newProduct = await Product.create({
             name: req.body.name,
-            category: req.body.category,
+            category: req.body.category || 'romantic', // Default to romantic if missing
             price: Number(req.body.price),
             image: finalMainImage,
             images: secondaryImages.length > 0 ? secondaryImages : [finalMainImage],
-            description: req.body.description,
-            tag: req.body.tag,
+            description: req.body.description || `Un magnifique ${req.body.name} pour surprendre votre binôme.`,
+            tag: req.body.tag || '',
             featured: req.body.featured === 'true'
         });
 
         res.status(201).json(newProduct);
     } catch (err) {
-        console.error(err);
-        res.status(400).json({ message: err.message });
+        console.error('Error creating product:', err);
+        res.status(400).json({ message: 'Erreur lors de la création du produit : ' + err.message });
     }
 });
 
