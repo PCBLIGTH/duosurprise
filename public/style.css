@@ -138,10 +138,76 @@ h3 {
 }
 
 .hero p {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: var(--text-muted);
-    margin-bottom: 3rem;
-    max-width: 500px;
+    margin-bottom: 3.5rem;
+    max-width: 550px;
+    line-height: 1.8;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    background: rgba(217, 70, 239, 0.1);
+    border: 1px solid rgba(217, 70, 239, 0.2);
+    border-radius: 100px;
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(5px);
+}
+
+.hero h1 em {
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* Floating Gift Animation Hero */
+.floating-gift {
+    width: 320px;
+    height: 320px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: var(--shadow-premium);
+    backdrop-filter: blur(15px);
+}
+
+.floating-gift::before {
+    content: '';
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(circle, rgba(217, 70, 239, 0.15) 0%, transparent 70%);
+    z-index: -1;
+}
+
+.floating-gift i {
+    font-size: 8rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 10px 20px rgba(217, 70, 239, 0.3));
+}
+
+.glow {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: var(--primary);
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: -1;
 }
 
 /* Buttons */
@@ -178,6 +244,18 @@ h3 {
 .btn-outline:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+.btn-accent {
+    background: var(--gradient-accent);
+    color: white;
+    box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.4);
+}
+
+.btn-accent:hover {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 15px 40px -10px rgba(245, 158, 11, 0.6);
 }
 
 /* Filters */
