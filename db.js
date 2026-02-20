@@ -3,8 +3,21 @@ require('dotenv').config();
 
 let sequelize;
 
-// Check if we should use SQLite (default for production/cloud if no DB_HOST is set)
-if (process.env.NODE_ENV === 'production' || !process.env.DB_HOST) {
+// Prefer PostgreSQL (Supabase) for permanent storage on Render/Production
+if (process.env.DATABASE_URL) {
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        protocol: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false
+            }
+        },
+        logging: false
+    });
+} else if (process.env.NODE_ENV === 'production') {
+    // If no DATABASE_URL is set but we are in production, still try to use a local or fallback DB
     sequelize = new Sequelize({
         dialect: 'sqlite',
         storage: './database.sqlite',
