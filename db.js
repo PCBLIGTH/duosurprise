@@ -40,8 +40,14 @@ if (process.env.DATABASE_URL) {
 const connectDB = async () => {
     try {
         await sequelize.authenticate();
-        const dbType = sequelize.getDialect() === 'sqlite' ? 'SQLite (Cloud Mode)' : 'MySQL (Local Mode)';
+        const dialect = sequelize.getDialect();
+        let dbType = 'Unknown';
+        if (dialect === 'postgres') dbType = 'PostgreSQL (Supabase)';
+        else if (dialect === 'sqlite') dbType = 'SQLite (Éphémère)';
+        else if (dialect === 'mysql') dbType = 'MySQL (Local)';
+
         console.log(`Connected to database: ${dbType}`);
+        console.log(`Connection URL detected: ${process.env.DATABASE_URL ? 'YES' : 'NO'}`);
         // Sync models
         await sequelize.sync({ alter: true });
         console.log('Database synced');
